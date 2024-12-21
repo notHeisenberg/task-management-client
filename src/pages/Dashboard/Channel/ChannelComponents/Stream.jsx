@@ -3,21 +3,22 @@ import { useContext, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Copy, SendHorizonal, Settings, UsersIcon } from "lucide-react";
+import { Copy, SendHorizonal, Settings, UsersIcon, Video } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import useAuth from "@/hooks/useAuth";
 import { axiosCommon } from "@/hooks/useAxiosCommon";
 import { BsThreeDotsVertical } from "react-icons/bs";
 import settingsLogo from "../../../../assets/settings.svg";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import MeetUpLogo from "@/assets/MeetUpLogo.png";
 
 const Stream = () => {
     const { channel, refetch } = useContext(ChannelContext);
     const [newAnnouncement, setNewAnnouncement] = useState("");
     const { toast } = useToast();
     const { user } = useAuth();
-    const [expandedComments, setExpandedComments] = useState({}); // Track expanded comments
-    const [commentText, setCommentText] = useState({}); // Track comment input for posts
+    const [expandedComments, setExpandedComments] = useState({}); 
+    const [commentText, setCommentText] = useState({}); 
 
     const copyChannelCode = () => {
         if (channel?.channelInfo?.channelCode) {
@@ -137,6 +138,11 @@ const Stream = () => {
         }
     };
 
+    const handleJoinMeet = () => {
+        const meetupUrl = `https://meetup-d48c4.web.app/room/${channel?.channelInfo?.channelCode}`;
+        window.open(meetupUrl, '_blank');
+    };
+
     if (!channel) {
         return <div>No stream data available.</div>;
     }
@@ -169,21 +175,54 @@ const Stream = () => {
 
             <div className="flex flex-col flex-wrap lg:flex-nowrap md:flex-row gap-5">
                 {/* Channel Code Section */}
-                <Card className="max-h-44">
-                    <CardHeader>
-                        <CardTitle>Channel Code:</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                        <p className="flex gap-2 justify-center items-center flex-wrap md:flex-nowrap">
-                            <span className="ml-2 font-mono font-semibold text-4xl text-blue-600">
-                                {channel.channelInfo?.channelCode || "N/A"}
-                            </span>
-                            <Button onClick={copyChannelCode} variant="outline">
-                                <Copy size={16} />
-                            </Button>
-                        </p>
-                    </CardContent>
-                </Card>
+                <div className="flex flex-col gap-4">
+                    <Card className="max-h-44">
+                        <CardHeader>
+                            <CardTitle>Channel Code:</CardTitle>
+                        </CardHeader>
+                        <CardContent>
+                            <p className="flex gap-2 justify-center items-center flex-wrap md:flex-nowrap">
+                                <span className="ml-2 font-mono font-semibold text-4xl text-blue-600">
+                                    {channel.channelInfo?.channelCode || "N/A"}
+                                </span>
+                                <Button onClick={copyChannelCode} variant="outline">
+                                    <Copy size={16} />
+                                </Button>
+                            </p>
+                        </CardContent>
+                    </Card>
+
+                    {/* Video Call Section - Only show if enabled */}
+                    {channel.channelInfo?.enableVideoCall && (
+                        <Card className="bg-gradient-to-r from-violet-100 to-blue-200 dark:from-violet-950 dark:to-blue-900 border-none hover:shadow-lg transition-all duration-300">
+                            <CardContent className="p-6">
+                                <div className="flex items-center justify-between">
+                                    <div className="flex items-center gap-4">
+                                        <img
+                                            src={MeetUpLogo}
+                                            alt="MeetUp"
+                                            className="w-10 h-10"
+                                        />
+                                        <div>
+                                            <h3 className="font-semibold text-lg mb-1">MeetUp Video Call</h3>
+                                            <p className="text-sm text-gray-700 dark:text-gray-300">
+                                                Join live video discussion with your channel
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <Button
+                                        onClick={handleJoinMeet}
+                                        variant="outline"
+                                        className="bg-white hover:bg-purple-50 dark:bg-gray-800 dark:hover:bg-gray-700 border-purple-200 dark:border-purple-800 hover:border-purple-300 transition-colors duration-300 gap-2"
+                                    >
+                                        <img src={MeetUpLogo} alt="MeetUp" className="w-5 h-5" />
+                                        Join Now
+                                    </Button>
+                                </div>
+                            </CardContent>
+                        </Card>
+                    )}
+                </div>
 
                 <div className="flex flex-col gap-12 w-full">
                     {/* Post Announcement Section */}
@@ -206,7 +245,7 @@ const Stream = () => {
 
                     {/* Updates Section */}
                     {Array.isArray(channel?.posts) && channel.posts?.length > 0 ? (
-                        channel.posts.map((post, index) => (
+                        [...channel.posts].reverse().map((post, index) => (
                             <Card key={index} className="shadow-md border">
                                 <CardContent className="p-4">
                                     {/* Post Header */}

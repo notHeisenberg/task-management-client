@@ -39,57 +39,47 @@ const DashboardCard = ({ id, channel, onEdit, onCopy, onArchive }) => {
         <div
             ref={setNodeRef}
             style={style}
-            {...attributes}
-            {...listeners}
-            className="relative cursor-move"
-            onClick={handleClick}
+            className="relative"
         >
-            {/* Magic UI shine border pattern */}
-            <div className="absolute inset-0 -z-10 rounded-lg bg-gradient-to-r from-violet-500 via-purple-500 to-blue-500 opacity-0 transition duration-500 group-hover:opacity-100" />
-            <div className="absolute inset-0 -z-10 rounded-lg bg-gradient-to-r from-violet-500 via-purple-500 to-blue-500 opacity-0 blur-xl transition duration-500 group-hover:opacity-75" />
+            {/* Drag handle with listeners */}
+            <div {...attributes} {...listeners} className="absolute inset-0 cursor-move" />
             
-            {/* Main card content */}
-            <div className="group relative overflow-hidden rounded-lg bg-white p-1">
-                <div className="relative z-10 bg-white rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300">
-                    {/* Top buttons */}
-                    <div className="absolute top-4 right-4 flex gap-3 text-white text-2xl z-20">
-                        <button 
-                            onClick={(e) => {
-                                e.stopPropagation();
-                                onEdit();
-                            }} 
-                            className="focus:outline-none hover:scale-110 transition-transform"
-                        >
-                            <FaClipboardUser />
-                        </button>
-                        <button 
-                            onClick={(e) => {
-                                e.stopPropagation();
-                                onCopy();
-                            }} 
-                            className="focus:outline-none hover:scale-110 transition-transform"
-                        >
-                            <MdFolderOpen />
-                        </button>
-                        <div className="dropdown" onClick={e => e.stopPropagation()}>
-                            <div tabIndex={0} role="button" className="focus:outline-none hover:scale-110 transition-transform">
-                                <HiOutlineDotsVertical />
-                            </div>
-                            <ul tabIndex={0} className="dropdown-content menu rounded-sm z-[1] w-20 text-lg bg-slate-300 text-[#000000] p-2 shadow">
-                                <li onClick={onEdit}>Edit</li>
-                                <hr className="glass" />
-                                <li onClick={onCopy} className="my-1">Copy</li>
-                                <hr className="glass" />
-                                <li onClick={onArchive}>Archive</li>
-                            </ul>
-                        </div>
-                    </div>
+            {/* Clickable content */}
+            <NavLink 
+                to={`/dashboard/ch/${channel?.channelInfo?.channelCode}`}
+                onClick={handleClick}
+                className="block relative z-10"
+            >
+                <div className="group relative overflow-hidden rounded-lg bg-white p-1">
+                    {/* Magic UI shine border pattern */}
+                    <div className="absolute inset-0 -z-10 rounded-lg bg-gradient-to-r from-violet-500 via-purple-500 to-blue-500 opacity-0 transition duration-500 group-hover:opacity-100" />
+                    <div className="absolute inset-0 -z-10 rounded-lg bg-gradient-to-r from-violet-500 via-purple-500 to-blue-500 opacity-0 blur-xl transition duration-500 group-hover:opacity-75" />
 
-                    <NavLink 
-                        to={`/dashboard/ch/${channel?.channelInfo?.channelCode}`}
-                        onClick={handleClick}
-                        className={isDragging ? 'pointer-events-none' : ''}
-                    >
+                    <div className="relative z-10 bg-white rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300">
+                        {/* Top buttons */}
+                        <div className="absolute top-4 right-4 flex gap-3 text-white text-2xl z-20">
+                            <button 
+                                onClick={(e) => {
+                                    e.preventDefault();
+                                    e.stopPropagation();
+                                    onEdit();
+                                }} 
+                                className="focus:outline-none hover:scale-110 transition-transform"
+                            >
+                                <FaClipboardUser />
+                            </button>
+                            <button 
+                                onClick={(e) => {
+                                    e.preventDefault();
+                                    e.stopPropagation();
+                                    onCopy();
+                                }} 
+                                className="focus:outline-none hover:scale-110 transition-transform"
+                            >
+                                <MdFolderOpen />
+                            </button>
+                        </div>
+
                         <div className="h-60 rounded-t-lg overflow-hidden">
                             <div
                                 style={{
@@ -128,9 +118,9 @@ const DashboardCard = ({ id, channel, onEdit, onCopy, onArchive }) => {
                                 </h1>
                             </div>
                         </div>
-                    </NavLink>
+                    </div>
                 </div>
-            </div>
+            </NavLink>
         </div>
     );
 };

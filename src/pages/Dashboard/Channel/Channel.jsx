@@ -2,13 +2,15 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import Stream from "./ChannelComponents/Stream";
 import Classwork from "./ChannelComponents/ClassWork";
 import People from "./ChannelComponents/People";
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { ChannelProvider } from "@/providers/ChannelProvider/ChannelProvider";
 import { ChannelContext } from "@/providers/ChannelProvider/ChannelContext";
 import { useNavigate } from "react-router-dom";
 import { CalendarIcon, SettingsIcon, VideoIcon } from "lucide-react";
 import useAuth from "@/hooks/useAuth";
 import { DotPattern } from '@/components/ui/dot-pattern';
+import ChannelSettingsModal from '@/components/modals/ChannelSettingsModal';
+
 
 const Channel = () => {
     return (
@@ -31,9 +33,10 @@ const Channel = () => {
 };
 
 const ChannelContent = () => {
-    const { channel, isLoading, isError } = useContext(ChannelContext);
-    const { user } = useAuth ();
+    const { channel, isLoading, isError, refetch } = useContext(ChannelContext);
+    const { user } = useAuth();
     const navigate = useNavigate();
+    const [isSettingsOpen, setIsSettingsOpen] = useState(false);
 
     if (isLoading) {
         return <div>Loading...</div>;
@@ -50,14 +53,14 @@ const ChannelContent = () => {
     };
 
     const handleMeetClick = () => {
-        // Logic to join a meeting
+        // Replace with your MeetUp application URL
+        const meetupUrl = `https://meetup-your-domain.com/room/${channel?.channelInfo?.channelCode}`;
+        window.open(meetupUrl, '_blank');
     };
 
     return (
         <div className="relative h-full flex flex-col pb-24">
-            {/* Tabs and TabsContent within the same Tabs component */}
             <Tabs defaultValue="stream" className="flex flex-col h-full">
-                {/* Tabs List (Sticky at the top) */}
                 <div className="sticky top-0 z-10 pt-4 px-5 flex items-center justify-between">
                     <TabsList className="h-12 flex items-center justify-start px-4">
                         <TabsTrigger value="stream">Stream</TabsTrigger>
@@ -68,7 +71,10 @@ const ChannelContent = () => {
                         {isOwner ? (
                             <>
                                 <CalendarIcon className="cursor-pointer" onClick={handleCalendarClick} />
-                                <SettingsIcon className="cursor-pointer" />
+                                <SettingsIcon
+                                    className="cursor-pointer"
+                                    onClick={() => setIsSettingsOpen(true)}
+                                />
                             </>
                         ) : (
                             <>
@@ -79,7 +85,6 @@ const ChannelContent = () => {
                     </div>
                 </div>
 
-                {/* Tabs Content (Scrollable Section) */}
                 <div className="flex-grow overflow-y-auto p-5">
                     <TabsContent value="stream">
                         <Stream />
@@ -92,6 +97,13 @@ const ChannelContent = () => {
                     </TabsContent>
                 </div>
             </Tabs>
+
+            <ChannelSettingsModal
+                isOpen={isSettingsOpen}
+                onClose={() => setIsSettingsOpen(false)}
+                channel={channel}
+                refetch={refetch}
+            />
         </div>
     );
 };
