@@ -1,3 +1,6 @@
 import { createContext } from "react";
 
-export const DashboardContext = createContext(null);
+export const DashboardContext = createContext({
+    channels: [],
+    setChannels: () => {},
+});

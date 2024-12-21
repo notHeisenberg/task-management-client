@@ -15,18 +15,22 @@ import PrivateRoute from "./PrivateRoute";
 import About from "@/pages/About/About";
 import Channel from "@/pages/Dashboard/Channel/Channel";
 import Post from "@/pages/Dashboard/Post/Post";
+import { Terminal } from "@/pages/Dashboard/Apps/components/Terminal";
+import { Calculator } from "@/pages/Dashboard/Apps/components/Calculator";
+import Whiteboard from '@/pages/Dashboard/Apps/components/Whiteboard';
+
 
 
 
 const router = createBrowserRouter([
     {
         path: "/",
-        element: <Root></Root>,
-        errorElement: <ErrorPage></ErrorPage>,
+        element: <Root />,
+        errorElement: <ErrorPage />,
         children: [
             {
                 path: "/",
-                element: <Home></Home>
+                element: <Home />
             },
             {
                 path: "auth",
@@ -71,7 +75,7 @@ const router = createBrowserRouter([
                 element: <Channel />
             },
             {
-                path: "ch/:channelCode/p/:postCode",
+                path: "ch/:channelCode/:firstLetter/:postCode",
                 element: <Post />
             },
             {
@@ -84,8 +88,25 @@ const router = createBrowserRouter([
             },
             {
                 path: "apps",
-                element: <Apps />,
-            },
+                children: [
+                    {
+                        path: "",
+                        element: <Apps />
+                    },
+                    {
+                        path: "terminal",
+                        element: <Terminal />
+                    },
+                    {
+                        path: "calculator",
+                        element: <Calculator />
+                    },
+                    {
+                        path: "whiteboard",
+                        element: <Whiteboard />
+                    }
+                ]
+            }
         ]
     }
 ])

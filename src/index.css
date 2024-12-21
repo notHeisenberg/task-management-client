@@ -1,7 +1,7 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
+@import url("https://cdn.syncfusion.com/ej2/material.css");
 /* ... */
 
 @layer base {
@@ -165,3 +165,20 @@ div::-webkit-scrollbar-thumb:hover {
 div::-webkit-scrollbar-track {
   background: #1e293b; /* Dark background */
 }
+
+/* For light theme */
+:root {
+  --calendar-assignment: #1a73e8;
+  --calendar-quiz: #e52e2e;
+  --calendar-material: #28a745;
+  --calendar-default: #6c757d;
+}
+
+/* For dark theme */
+[data-theme='dark'] {
+  --calendar-assignment: #4285f4;
+  --calendar-quiz: #ff4444;
+  --calendar-material: #2ecc71;
+  --calendar-default: #95a5a6;
+}
+

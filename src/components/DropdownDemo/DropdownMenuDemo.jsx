@@ -30,7 +30,7 @@ export function DropdownMenuDemo() {
         <DropdownMenu>
             <DropdownMenuTrigger asChild>
                 <Avatar>
-                    <AvatarImage src={user?.photoURL} className="w-12 h-12 rounded-full transition-all cursor-pointer hover:p-0.5" alt="avatar" />
+                    <AvatarImage src={user?.photoURL || "https://robohash.org/default-user?set=set1&size=400x400"} className="w-12 h-12 rounded-full transition-all cursor-pointer hover:p-0.5" alt="avatar" />
                 </Avatar>
             </DropdownMenuTrigger>
             <DropdownMenuContent className="w-56">

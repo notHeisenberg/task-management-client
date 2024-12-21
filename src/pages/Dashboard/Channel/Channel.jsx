@@ -8,12 +8,23 @@ import { ChannelContext } from "@/providers/ChannelProvider/ChannelContext";
 import { useNavigate } from "react-router-dom";
 import { CalendarIcon, SettingsIcon, VideoIcon } from "lucide-react";
 import useAuth from "@/hooks/useAuth";
+import { DotPattern } from '@/components/ui/dot-pattern';
 
 const Channel = () => {
     return (
         <ChannelProvider>
-            <div className="h-screen">
-                <ChannelContent />
+            <div className="relative h-screen">
+                <DotPattern
+                    width={16}
+                    height={16}
+                    cx={1}
+                    cy={1}
+                    cr={1}
+                    className="absolute inset-0 opacity-30"
+                />
+                <div className="relative z-10">
+                    <ChannelContent />
+                </div>
             </div>
         </ChannelProvider>
     );

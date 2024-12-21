@@ -44,10 +44,10 @@ const Classwork = () => {
 
     useEffect(() => {
         if (channel) {
-            const topicsFromPosts = channel.posts.filter((post) => post.type === "topic").map((post) => post.name);
+            const topicsFromPosts = channel.posts?.filter((post) => post.type === "topic").map((post) => post.name);
             setTopics(topicsFromPosts);
 
-            const validPosts = channel.posts.filter((post) => post.type !== "topic" && post.type !== "announcement");
+            const validPosts = channel.posts?.filter((post) => post.type !== "topic" && post.type !== "announcement");
             setFilteredPosts(validPosts);
         }
     }, [channel]);
@@ -90,8 +90,8 @@ const Classwork = () => {
         closeDialog();
     };
 
-    const getPostsByTopic = (topic) => filteredPosts.filter((post) => post.topic === topic);
-    const uncategorizedPosts = filteredPosts.filter((post) => post.topic === "No Topic");
+    const getPostsByTopic = (topic) => filteredPosts?.filter((post) => post.topic === topic);
+    const uncategorizedPosts = filteredPosts?.filter((post) => post.topic === "No Topic");
 
     const toggleCard = (postCode) => {
         setExpandedCards((prev) => ({
@@ -114,7 +114,7 @@ const Classwork = () => {
             status: "success",
         });
     };
-
+// console.log(channel)
     return (
         <div className="space-y-6 container mx-auto px-20">
             {isCreator && (
@@ -122,7 +122,7 @@ const Classwork = () => {
                     <CreateDropdown onOpenDialog={openDialog} />
                 </div>
             )}
-            {!filteredPosts.length && !topics.length ? (
+            {!filteredPosts?.length && !topics?.length ? (
                 <div className="flex flex-col items-center">
                     <img src={placeholder_dog} alt="Placeholder" className="w-1/4 h-auto mb-2" />
                     <h1 className="font-semibold text-sm">This is where you’ll assign work</h1>
@@ -142,7 +142,7 @@ const Classwork = () => {
                             <SelectContent>
                                 <SelectGroup>
                                     <SelectItem value="All Topics">All Topics</SelectItem>
-                                    {topics.map((topic, index) => (
+                                    {topics?.map((topic, index) => (
                                         <SelectItem key={index} value={topic}>
                                             {topic}
                                         </SelectItem>
@@ -154,7 +154,7 @@ const Classwork = () => {
 
                     {selectedTopic === "All Topics" ? (
                         <>
-                            {uncategorizedPosts.length > 0 && (
+                            {uncategorizedPosts?.length > 0 && (
                                 <div>
                                     {uncategorizedPosts.map((post) => (
                                         <Card key={post.postCode} className="mb-4 shadow-md">

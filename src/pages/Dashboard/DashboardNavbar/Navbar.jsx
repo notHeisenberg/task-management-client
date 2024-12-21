@@ -33,7 +33,7 @@ export function Navbar() {
 
   return (
     <div className={`dark:bg-[#1f2937] bg-white w-full border-b shadow-md dark:shadow-[#1f2937] p-4 flex items-center justify-between`}>{ }
-      <NavLink to={'/'} className={'text-xl font-semibold'}>ArtTable</NavLink>
+      <NavLink to={'/'} className={'text-xl font-semibold'}>Taskifyx</NavLink>
 
       {/* Search Bar */}
       <div className="w-64 mx-4 relative">

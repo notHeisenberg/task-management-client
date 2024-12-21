@@ -19,11 +19,36 @@ const Dashboard = () => {
     const savedState = localStorage.getItem("sidebarCollapsed");
     return savedState ? JSON.parse(savedState) : false;
   });
-  const { user } = useAuth();
+  const { user, setIsDarkMode } = useAuth();
   const [dashBoardBgImage, setDashBoardBgImage] = useState("");
   useEffect(() => {
     setDashBoardBgImage(localStorage.getItem("bgImage"));
-  }, [])
+    
+    // Add keyboard shortcut listener
+    const handleKeyPress = (e) => {
+      // Check for Cmd + / (Mac) or Ctrl + / (Windows)
+      if ((e.metaKey || e.ctrlKey) && e.key === '/') {
+        e.preventDefault(); // Prevent default browser behavior
+        
+        // Toggle theme
+        const htmlBody = document.getElementById("mainBody");
+        setIsDarkMode(prev => {
+          const newMode = !prev;
+          htmlBody.classList.toggle("dark");
+          localStorage.setItem("darkMode", newMode);
+          return newMode;
+        });
+      }
+    };
+
+    // Add event listener
+    document.addEventListener('keydown', handleKeyPress);
+
+    // Cleanup
+    return () => {
+      document.removeEventListener('keydown', handleKeyPress);
+    };
+  }, [setIsDarkMode]);
 
   // React Query for fetching channels
   const { data: channels, isLoading, isError, refetch } = useQuery({
@@ -59,7 +84,7 @@ const Dashboard = () => {
   return (
     <DashboardContext.Provider value={{ refetch, channels, isLoading, isError }}>
       <SidebarProvider>
-        <div className="flex h-screen w-screen bg-white">
+        <div className="flex h-screen w-screen bg-white dark:bg-gray-900">
           {/* Sidebar */}
           <div
             className={clsx(

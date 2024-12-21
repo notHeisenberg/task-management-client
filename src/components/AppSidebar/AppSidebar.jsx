@@ -39,7 +39,7 @@ export function AppSidebar({ isCollapsed, toggleSidebar, ownedChannels, enrolled
   };
 
   return (
-    <div className="h-full dark:bg-gray-800 bg-white dark:text-white shadow-lg dark:shadow-gray-800 flex flex-col">
+    <div className="h-full dark:bg-gray-800 bg-white dark:text-white shadow-lg dark:shadow-gray-800 flex flex-col border-r">
       {/* Toggle Button */}
       <span
         className={`p-2 focus:outline-none ${isCollapsed ? "text-center" : "text-start"}`}
