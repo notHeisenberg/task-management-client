@@ -30,7 +30,7 @@ const Whiteboard = () => {
 
     return (
         <div 
-            className="flex flex-col h-full w-full" 
+            className="flex flex-col h-full w-full"
             id="whiteboard-container"
         >
             <div className="absolute top-4 right-4 z-50 flex gap-2">
@@ -52,12 +52,11 @@ const Whiteboard = () => {
                 />
             </div>
 
-            <div className="flex-grow relative">
+            <div className={`flex-1 relative ${isFullscreen ? 'mt-0' : 'mb-16'}`}>
                 <Tldraw
                     persistenceKey="user-whiteboard"
-                    className="h-full w-full pb-5"
+                    className="h-full w-full"
                     forceMobile
-                    pointerEvents=""
                 />
             </div>
         </div>

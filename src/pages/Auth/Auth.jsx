@@ -2,7 +2,7 @@ import { useState } from "react";
 import SignUp from "./SignUp/SignUp";
 import Login from "./Login/Login";
 import "./Auth.css";
-import logo from "../../assets/logo.svg"
+import logo from "@/assets/taskfyx_logo.png";
 import { NavLink } from "react-router-dom";
 
 const Auth = () => {
@@ -24,15 +24,15 @@ const Auth = () => {
                     <div className="toggle">
                         <div className="toggle-panel toggle-left">
                             <NavLink to="/">
-                                <img src={logo} alt="nature" className="w-24 h-24 object-cover rounded-lg" />s
+                                <img src={logo} alt="nature" className="w-24 h-24 object-cover rounded-lg" />
                             </NavLink>
                             <h1 className="text-[2rem] font-bold">Welcome Back!</h1>
                             <p>Enter your personal details to use all of site features</p>
                             <button className=" bg-transparent text-white text-xs py-2 px-11 border rounded-lg font-semibold tracking-wide uppercase mt-2 cursor-pointer" id="login" onClick={toggleAuth}>Sign In</button>
                         </div>
-                        <div className="toggle-panel toggle-right">
+                        <div className="toggle-panel toggle-right transition-colors duration-300 ease-in-out">
                             <NavLink to="/">
-                                <img src={logo} alt="nature" className="w-24 h-24 object-cover rounded-lg" />s
+                                <img src={logo} alt="nature" className="w-24 h-24 object-cover rounded-lg" />
                             </NavLink>
                             <h1 className="text-[2rem] font-bold">Hello, Friend!</h1>
                             <p>Register with your personal details to use all of site features</p>

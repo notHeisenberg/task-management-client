@@ -149,241 +149,255 @@ const Stream = () => {
 
     return (
         <>
-            <Card
-                className="relative mb-8 bg-cover bg-center border-none"
-                style={{
-                    backgroundImage: `url('https://www.gstatic.com/classroom/themes/img_code.jpg')`,
-                }}
-            >
+            {/* Hero Banner */}
+            <Card className="relative mb-8 overflow-hidden border-none">
+                <div 
+                    className="absolute inset-0 bg-cover bg-center"
+                    style={{
+                        backgroundImage: `url('https://www.gstatic.com/classroom/themes/img_code.jpg')`
+                    }}
+                />
+                <div className="absolute inset-0 bg-gradient-to-r from-blue-600/90 to-purple-600/90 dark:from-blue-900/90 dark:to-purple-900/90" />
                 <CardHeader className="relative z-10">
                     <CardTitle className="text-4xl font-bold text-white">
                         {channel.channelInfo.name || "Channel Page"}
                     </CardTitle>
                 </CardHeader>
-                <CardContent className="relative z-10">
-                    <p className="text-white text-lg">
-                        {channel.channelInfo.section && `${channel.channelInfo.section}`}
-                    </p>
-                    <p className="text-white text-lg">
-                        {channel.channelInfo.courseID && `${channel.channelInfo.courseID}`}
-                    </p>
-                    <p className="text-white text-lg">
-                        {channel.channelInfo.roomID && `Room : ${channel.channelInfo.roomID}`}
-                    </p>
+                <CardContent className="relative z-10 space-y-2">
+                    {channel.channelInfo.section && (
+                        <p className="text-white/90 text-lg font-medium">
+                            {channel.channelInfo.section}
+                        </p>
+                    )}
+                    {channel.channelInfo.courseID && (
+                        <p className="text-white/90 text-lg font-medium">
+                            {channel.channelInfo.courseID}
+                        </p>
+                    )}
+                    {channel.channelInfo.roomID && (
+                        <p className="text-white/90 text-lg font-medium">
+                            Room: {channel.channelInfo.roomID}
+                        </p>
+                    )}
                 </CardContent>
             </Card>
 
             <div className="flex flex-col flex-wrap lg:flex-nowrap md:flex-row gap-5">
-                {/* Channel Code Section */}
-                <div className="flex flex-col gap-4">
-                    <Card className="max-h-44">
+                {/* Channel Info Cards */}
+                <div className="flex flex-col gap-4 w-full md:w-72">
+                    {/* Channel Code Card */}
+                    <Card className="bg-white dark:bg-gray-800 shadow-md hover:shadow-lg transition-shadow duration-300">
                         <CardHeader>
-                            <CardTitle>Channel Code:</CardTitle>
+                            <CardTitle className="text-xl font-semibold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+                                Channel Code
+                            </CardTitle>
                         </CardHeader>
                         <CardContent>
-                            <p className="flex gap-2 justify-center items-center flex-wrap md:flex-nowrap">
-                                <span className="ml-2 font-mono font-semibold text-4xl text-blue-600">
+                            <div className="flex items-center justify-between gap-2 p-2 bg-gray-50 dark:bg-gray-700/50 rounded-lg">
+                                <span className="font-mono font-semibold text-2xl text-gray-700 dark:text-gray-200">
                                     {channel.channelInfo?.channelCode || "N/A"}
                                 </span>
-                                <Button onClick={copyChannelCode} variant="outline">
-                                    <Copy size={16} />
+                                <Button 
+                                    onClick={copyChannelCode} 
+                                    variant="ghost" 
+                                    className="hover:bg-gray-200 dark:hover:bg-gray-600"
+                                >
+                                    <Copy className="w-4 h-4" />
                                 </Button>
-                            </p>
+                            </div>
                         </CardContent>
                     </Card>
 
-                    {/* Video Call Section - Only show if enabled */}
+                    {/* Video Call Card */}
                     {channel.channelInfo?.enableVideoCall && (
-                        <Card className="bg-gradient-to-r from-violet-100 to-blue-200 dark:from-violet-950 dark:to-blue-900 border-none hover:shadow-lg transition-all duration-300">
-                            <CardContent className="p-6">
-                                <div className="flex items-center justify-between">
-                                    <div className="flex items-center gap-4">
-                                        <img
-                                            src={MeetUpLogo}
-                                            alt="MeetUp"
-                                            className="w-10 h-10"
-                                        />
-                                        <div>
-                                            <h3 className="font-semibold text-lg mb-1">MeetUp Video Call</h3>
-                                            <p className="text-sm text-gray-700 dark:text-gray-300">
-                                                Join live video discussion with your channel
-                                            </p>
+                        <Card className="overflow-hidden">
+                            <div className="relative p-6">
+                                <div className="absolute inset-0 bg-gradient-to-r from-violet-100 to-blue-200 dark:from-violet-950 dark:to-blue-900" />
+                                <div className="relative z-10">
+                                    <div className="flex items-center justify-between">
+                                        <div className="flex items-center gap-4">
+                                            <div className="p-2 rounded-xl shadow-lg">
+                                                <img
+                                                    src={MeetUpLogo}
+                                                    alt="MeetUp"
+                                                    className="w-10 h-10 object-contain"
+                                                />
+                                            </div>
+                                            <div>
+                                                <h3 className="font-semibold text-lg mb-1 text-gray-800 dark:text-white">
+                                                    MeetUp Video Call
+                                                </h3>
+                                                <p className="text-sm text-gray-600 dark:text-gray-300">
+                                                    Join live video discussion
+                                                </p>
+                                            </div>
                                         </div>
+                                        <Button
+                                            onClick={handleJoinMeet}
+                                            className="bg-white hover:bg-gray-50 text-gray-800 shadow-md hover:shadow-lg transition-all duration-300 gap-2"
+                                        >
+                                            <Video className="w-4 h-4" />
+                                            Join
+                                        </Button>
                                     </div>
-                                    <Button
-                                        onClick={handleJoinMeet}
-                                        variant="outline"
-                                        className="bg-white hover:bg-purple-50 dark:bg-gray-800 dark:hover:bg-gray-700 border-purple-200 dark:border-purple-800 hover:border-purple-300 transition-colors duration-300 gap-2"
-                                    >
-                                        <img src={MeetUpLogo} alt="MeetUp" className="w-5 h-5" />
-                                        Join Now
-                                    </Button>
                                 </div>
-                            </CardContent>
+                            </div>
                         </Card>
                     )}
                 </div>
 
-                <div className="flex flex-col gap-12 w-full">
-                    {/* Post Announcement Section */}
-                    <Card>
+                {/* Main Content Area */}
+                <div className="flex-1 space-y-6">
+                    {/* Post Announcement Card */}
+                    <Card className="bg-white dark:bg-gray-800 shadow-md hover:shadow-lg transition-all duration-300">
                         <CardHeader>
-                            <CardTitle>Post an Update</CardTitle>
+                            <CardTitle className="text-xl font-semibold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+                                Share with your class
+                            </CardTitle>
                         </CardHeader>
                         <CardContent>
-                            <Textarea
-                                value={newAnnouncement}
-                                onChange={(e) => setNewAnnouncement(e.target.value)}
-                                placeholder="Share an announcement with the channel..."
-                                className="mb-4"
-                            />
-                            <Button onClick={handlePostAnnouncement}>
-                                Post
-                            </Button>
+                            <div className="flex gap-4">
+                                <img
+                                    src={user?.photoURL || "https://robohash.org/default-user?set=set1&size=400x400"}
+                                    alt="Your profile"
+                                    className="w-10 h-10 rounded-full"
+                                />
+                                <div className="flex-1">
+                                    <Textarea
+                                        value={newAnnouncement}
+                                        onChange={(e) => setNewAnnouncement(e.target.value)}
+                                        placeholder="Share an announcement with your class..."
+                                        className="min-h-[100px] resize-none mb-4"
+                                    />
+                                    <div className="flex justify-end">
+                                        <Button 
+                                            onClick={handlePostAnnouncement}
+                                            className="bg-blue-600 hover:bg-blue-700 text-white"
+                                        >
+                                            Post
+                                        </Button>
+                                    </div>
+                                </div>
+                            </div>
                         </CardContent>
                     </Card>
 
-                    {/* Updates Section */}
-                    {Array.isArray(channel?.posts) && channel.posts?.length > 0 ? (
-                        [...channel.posts].reverse().map((post, index) => (
-                            <Card key={index} className="shadow-md border">
-                                <CardContent className="p-4">
-                                    {/* Post Header */}
-                                    <div className="flex justify-between items-center mb-4">
-                                        <div className="flex items-center gap-2">
-                                            <img
-                                                src={post.author?.image}
-                                                alt={post.author?.name}
-                                                className="w-10 h-10 rounded-full"
-                                            />
-                                            <div>
-                                                <span className="font-bold">{post.author?.name}</span>
-                                                <p className="text-sm text-gray-500">
-                                                    {new Date(post?.timestamp).toLocaleDateString('en-US', {
-                                                        month: 'short',
-                                                        day: 'numeric',
-                                                    })},{" "}
-                                                    {new Date(post?.timestamp).toLocaleTimeString([], {
-                                                        hour: 'numeric',
-                                                        minute: 'numeric',
-                                                    })}
-                                                </p>
+                    {/* Posts Section */}
+                    {channel.posts?.map((post, index) => (
+                        <Card key={post.postCode} className="bg-white dark:bg-gray-800 shadow-md hover:shadow-lg transition-all duration-300 overflow-hidden group">
+                            <CardHeader className="relative">
+                                {/* Author Info */}
+                                <div className="flex items-start justify-between">
+                                    <div className="flex items-center gap-4">
+                                        <img
+                                            src={post.author?.image}
+                                            alt={post.author?.name}
+                                            className="w-12 h-12 rounded-full border-2 border-gray-100 dark:border-gray-700 shadow-md"
+                                        />
+                                        <div>
+                                            <h3 className="font-semibold text-lg text-gray-900 dark:text-white">
+                                                {post.author?.name}
+                                            </h3>
+                                            <p className="text-sm text-gray-500 dark:text-gray-400">
+                                                {new Date(post.timestamp).toLocaleDateString('en-US', {
+                                                    year: 'numeric',
+                                                    month: 'long',
+                                                    day: 'numeric',
+                                                    hour: '2-digit',
+                                                    minute: '2-digit'
+                                                })}
+                                            </p>
+                                        </div>
+                                    </div>
+
+                                    {/* Post Actions */}
+                                    <div className="flex items-center gap-2">
+                                        <Button
+                                            variant="ghost"
+                                            size="sm"
+                                            className="opacity-0 group-hover:opacity-100 transition-opacity duration-200"
+                                            onClick={() => copyPostCode(channel.channelInfo.channelCode, post.postCode)}
+                                        >
+                                            <Copy className="w-4 h-4 mr-2" />
+                                            Share
+                                        </Button>
+                                    </div>
+                                </div>
+
+                                {/* Post Content */}
+                                <div className="mt-4 text-gray-700 dark:text-gray-300">
+                                    <p className="whitespace-pre-wrap">{post.content}</p>
+                                </div>
+                            </CardHeader>
+
+                            {/* Comments Section */}
+                            <CardContent>
+                                <div className="mt-4">
+                                    <Button
+                                        variant="ghost"
+                                        size="sm"
+                                        onClick={() => toggleComments(index)}
+                                        className="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors"
+                                    >
+                                        {expandedComments[index] ? 'Hide' : 'Show'} Comments ({post.comments?.length || 0})
+                                    </Button>
+
+                                    {/* Comments List */}
+                                    {expandedComments[index] && (
+                                        <div className="mt-4 space-y-4">
+                                            {post.comments?.map((comment, commentIndex) => (
+                                                <div
+                                                    key={commentIndex}
+                                                    className="flex items-start gap-3 p-3 bg-gray-50 dark:bg-gray-700/50 rounded-lg"
+                                                >
+                                                    <img
+                                                        src={comment.image}
+                                                        alt={comment.author}
+                                                        className="w-8 h-8 rounded-full border border-gray-200 dark:border-gray-600"
+                                                    />
+                                                    <div className="flex-1">
+                                                        <h4 className="text-sm font-medium text-gray-900 dark:text-white">
+                                                            {comment.author}
+                                                        </h4>
+                                                        <p className="text-sm text-gray-700 dark:text-gray-300">
+                                                            {comment.content}
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                            ))}
+
+                                            {/* Add Comment */}
+                                            <div className="flex gap-3 mt-4">
+                                                <img
+                                                    src={user?.photoURL || "https://robohash.org/default-user?set=set1&size=400x400"}
+                                                    alt="Your profile"
+                                                    className="w-8 h-8 rounded-full border border-gray-200 dark:border-gray-600"
+                                                />
+                                                <div className="flex-1">
+                                                    <Textarea
+                                                        value={commentText[index] || ''}
+                                                        onChange={(e) => handleCommentChange(index, e.target.value)}
+                                                        placeholder="Add a comment..."
+                                                        className="min-h-[60px] resize-none text-sm"
+                                                    />
+                                                    <div className="flex justify-end mt-2">
+                                                        <Button
+                                                            onClick={() => handleAddComment(index)}
+                                                            size="sm"
+                                                            className="bg-blue-600 hover:bg-blue-700 text-white"
+                                                        >
+                                                            <SendHorizonal className="w-4 h-4 mr-2" />
+                                                            Comment
+                                                        </Button>
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
-                                        <Popover>
-                                            <PopoverTrigger>
-                                                <Button variant="ghost" size="sm" className="rounded-full">
-                                                    <BsThreeDotsVertical />
-                                                </Button>
-                                            </PopoverTrigger>
-                                            <PopoverContent className='w-fit h-fit p-1 absolute right-0'>
-                                                <Button variant="ghost" size="sm" onClick={() => copyPostCode(post?.channelCode, post?.postCode)}>
-                                                    Copy Link
-                                                </Button>
-                                            </PopoverContent>
-                                        </Popover>
-                                    </div>
-
-                                    {/* Post Content */}
-                                    <p className="mb-4">{post.content}</p>
-                                    <hr className="my-3" />
-
-                                    {/* Comment Section */}
-                                    <div>
-                                        {post.comments?.length > 0 && (
-                                            <Button
-                                                variant="ghost"
-                                                onClick={() => toggleComments(index)}
-                                                className="mb-3"
-                                            >
-                                                <UsersIcon />  {` ${post.comments?.length || 0} Comments`}
-                                            </Button>
-                                        )}
-                                        <ul className="space-y-4">
-                                            {(expandedComments[index]
-                                                ? post.comments || [] // Ensure post.comments is an array
-                                                : (post.comments || []).slice(0, 1) // Show only the first comment if collapsed
-                                            ).map((comment, idx) => (
-                                                <li
-                                                    key={idx}
-                                                    className="flex justify-between items-center text-sm"
-                                                >
-                                                    <div className="flex items-center gap-2">
-                                                        <img
-                                                            src={
-                                                                comment.image ||
-                                                                "https://robohash.org/default-user?set=set1&size=400x400"
-                                                            }
-                                                            alt={comment.author}
-                                                            className="w-8 h-8 rounded-full"
-                                                        />
-                                                        <div>
-                                                            <span className="font-semibold">
-                                                                {comment.author}
-                                                            </span>{" "}
-                                                            <span className="text-gray-500 text-xs">
-                                                                {new Date(comment.timestamp).toLocaleTimeString([], {
-                                                                    hour: "2-digit",
-                                                                    minute: "2-digit",
-                                                                })}
-                                                            </span>
-                                                            <p>{comment.content}</p>
-                                                        </div>
-                                                    </div>
-                                                </li>
-                                            ))}
-                                        </ul>
-                                        <div className="flex items-center mt-4 gap-2">
-                                            <img
-                                                src={
-                                                    user?.photoURL ||
-                                                    "https://robohash.org/default-user?set=set1&size=400x400"
-                                                }
-                                                alt="Your profile"
-                                                className="w-8 h-8 rounded-full"
-                                            />
-                                            <Textarea
-                                                rows={1}
-                                                value={commentText[index] || ""}
-                                                onChange={(e) =>
-                                                    handleCommentChange(index, e.target.value)
-                                                }
-                                                placeholder="Write a comment..."
-                                                className="w-full"
-                                            />
-                                            <Button
-                                                onClick={() => handleAddComment(index)}
-                                                className="ml-2"
-                                                variant="ghost"
-                                            >
-                                                <SendHorizonal size={20} />
-                                            </Button>
-                                        </div>
-                                    </div>
-                                </CardContent>
-                            </Card>
-                        ))
-                    ) : (
-                        <Card className="flex justify-center items-center flex-col md:flex-row p-4 bg-gray-50 shadow-md border rounded">
-                            <CardHeader className="">
-                                <img src={settingsLogo} alt="settings" className="w-32 h-32 " />
-                            </CardHeader>
-                            <CardContent>
-                                <div className="flex flex-col gap-2 mt-5">
-                                    <CardTitle className="text-2xl font-light">
-                                        This is where you can talk to your class
-                                    </CardTitle>
-                                    <p className="text-sm">
-                                        Use the stream to share announcements, post assignments, and
-                                        respond to student questions.
-                                    </p>
-                                </div>
-                                <div className="mt-5 float-end btn btn-outline">
-                                    <Settings size={20} /> Settings
+                                    )}
                                 </div>
                             </CardContent>
                         </Card>
-                    )}
+                    ))}
                 </div>
             </div>
         </>

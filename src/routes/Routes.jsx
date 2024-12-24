@@ -19,9 +19,6 @@ import { Terminal } from "@/pages/Dashboard/Apps/components/Terminal";
 import { Calculator } from "@/pages/Dashboard/Apps/components/Calculator";
 import Whiteboard from '@/pages/Dashboard/Apps/components/Whiteboard';
 
-
-
-
 const router = createBrowserRouter([
     {
         path: "/",

@@ -1,4 +1,3 @@
-
 import { DropdownMenuDemo } from "@/components/DropdownDemo/DropdownMenuDemo";
 import Button from "@/components/shared/Button";
 import Container from "@/components/shared/Container";
@@ -7,6 +6,7 @@ import { useState } from "react";
 import { GiHamburgerMenu } from "react-icons/gi";
 import { RxCross2 } from "react-icons/rx";
 import { Link, useNavigate } from "react-router-dom";
+import logo from "@/assets/taskfyx_logo.png";
 
 const NavBar = () => {
   const [getMenu, setMenu] = useState(false);
@@ -45,8 +45,11 @@ const NavBar = () => {
             {/* Desktop Navigation */}
 
             <div className="hidden lg:flex items-center justify-between text-white py-6">
-              <div onClick={handleClick} className="w-[12%] text-3xl font-bold cursor-pointer">
-                Taskifyx
+              <div onClick={handleClick} className="w-[8%] text-3xl font-bold cursor-pointer flex items-center">
+                <img src={logo} alt="Taskifyx logo" className="w-full h-full object-contain" />
+                <span className="bg-gradient-to-r from-pink-500 via-white to-pink-500 text-transparent bg-clip-text bg-[length:200%_100%] animate-shimmer">
+                  Taskifyx
+                </span>
               </div>
               <div className="flex gap-6">
                 {navLinks.map((item, idx) => (
@@ -86,8 +89,11 @@ const NavBar = () => {
             {/* Mobile Navigation */}
             <div className="lg:hidden text-white py-6">
               <div className="flex justify-between items-center">
-                <div onClick={handleClick} className="w-[16%] text-3xl font-bold cursor-pointer">
-                  Taskifyx
+                <div onClick={handleClick} className="w-[16%] text-3xl font-bold cursor-pointer flex items-center flex-wrap">
+                  <img src={logo} alt="Taskifyx logo" className="w-14 h-14" />
+                  <span className="bg-gradient-to-r from-pink-500 via-white to-pink-500 text-transparent bg-clip-text bg-[length:200%_100%] animate-shimmer">
+                    Taskifyx
+                  </span>
                 </div>
                 {
                   user ?

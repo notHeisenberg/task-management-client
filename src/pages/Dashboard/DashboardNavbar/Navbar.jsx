@@ -1,5 +1,3 @@
-
-import { Input } from "@/components/ui/input";
 import { DropdownMenuDemo } from "@/components/DropdownDemo/DropdownMenuDemo";
 import useAuth from "@/hooks/useAuth";
 import { useEffect, useState } from "react";
@@ -7,10 +5,10 @@ import { axiosCommon } from "@/hooks/useAxiosCommon";
 import { NavLink } from "react-router-dom";
 import PopOver from "@/components/PopOver/PopOver";
 import ThemeChange from "@/components/Theme/Theme";
-
+import logo from "@/assets/taskfyx_logo.png";
 
 export function Navbar() {
-  const { user } = useAuth()
+  const { user } = useAuth();
   const [role, setRole] = useState(null);
 
   useEffect(() => {
@@ -18,10 +16,7 @@ export function Navbar() {
       axiosCommon.get(`/user/${user.email}`)
         .then((res) => {
           if (res.data) {
-            // console.log("User data:", res.data);
-            setRole(res.data.role == "general-user" ? "User" : "Admin");
-          } else {
-            console.log("No user found");
+            setRole(res.data.role === "general-user" ? "User" : "Admin");
           }
         })
         .catch((err) => {
@@ -30,47 +25,48 @@ export function Navbar() {
     }
   }, [user?.email]);
 
-
   return (
-    <div className={`dark:bg-[#1f2937] bg-white w-full border-b shadow-md dark:shadow-[#1f2937] p-4 flex items-center justify-between`}>{ }
-      <NavLink to={'/'} className={'text-xl font-semibold'}>Taskifyx</NavLink>
-
-      {/* Search Bar */}
-      <div className="w-64 mx-4 relative">
-        <Input
-          type="text"
-          placeholder="Search..."
-          className="dark:text-gray-800 w-full bg-gray-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 rounded-md pl-10"
-        />
-        <svg
-          className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
-          xmlns="http://www.w3.org/2000/svg"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-          width="20"
-          height="20"
+    <div className="sticky top-0 z-50 w-full border-b bg-gradient-to-r from-white via-gray-50 to-white dark:from-gray-800 dark:via-gray-900 dark:to-gray-800 backdrop-blur-sm shadow-lg dark:shadow-gray-900/30">
+      <div className="flex h-16 items-center justify-between px-4 sm:px-6">
+        {/* Logo */}
+        <NavLink 
+          to={'/'} 
+          className="flex items-center space-x-2 transition-transform hover:scale-105"
         >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth="2"
-            d="M21 21l-4.35-4.35M17 10a7 7 0 11-14 0 7 7 0 0114 0z"
+          <img 
+            src={logo} 
+            alt="Taskifyx logo" 
+            className="h-10 w-10 object-contain" 
           />
-        </svg>
-      </div>
+          <span className="hidden sm:block font-bold text-xl bg-gradient-to-r from-blue-600 to-purple-600 dark:from-blue-400 dark:to-purple-400 text-transparent bg-clip-text">
+            Taskifyx
+          </span>
+        </NavLink>
 
-      {/* User Avatar Dropdown */}
-      <div
-        className="flex gap-2"
-        tabIndex="0"
-      >
-        <ThemeChange />
-        <PopOver />
-        <DropdownMenuDemo />
-        <div className="hidden md:flex flex-col flex-wrap justify-center">
-          <h1 className="text-sm font-semibold">{user?.displayName}</h1>
-          <p className="text-xs">{role}</p>
+        {/* Right Side Items */}
+        <div className="flex items-center space-x-3 sm:space-x-4">
+          {/* Theme Toggle */}
+          <div className="hover:scale-105 transition-transform">
+            <ThemeChange />
+          </div>
+
+          {/* Notifications */}
+          <div className="hover:scale-105 transition-transform">
+            <PopOver />
+          </div>
+
+          {/* User Menu */}
+          <div className="flex items-center space-x-2">
+            <DropdownMenuDemo />
+            <div className="hidden md:flex flex-col items-end">
+              <h1 className="text-sm font-semibold bg-gradient-to-r from-blue-600 to-purple-600 dark:from-blue-400 dark:to-purple-400 text-transparent bg-clip-text">
+                {user?.displayName}
+              </h1>
+              <p className="text-xs text-gray-600 dark:text-gray-400">
+                {role}
+              </p>
+            </div>
+          </div>
         </div>
       </div>
     </div>

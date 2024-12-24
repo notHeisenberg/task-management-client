@@ -39,16 +39,17 @@ export function AppSidebar({ isCollapsed, toggleSidebar, ownedChannels, enrolled
   };
 
   return (
-    <div className="h-full dark:bg-gray-800 bg-white dark:text-white shadow-lg dark:shadow-gray-800 flex flex-col border-r">
+    <div className="h-full bg-gradient-to-b from-white to-gray-50 dark:from-gray-800 dark:to-gray-900 dark:text-white shadow-xl backdrop-blur-sm dark:shadow-gray-800/20 flex flex-col border-r border-gray-200 dark:border-gray-700 transition-all duration-300">
       {/* Toggle Button */}
-      <span
-        className={`p-2 focus:outline-none ${isCollapsed ? "text-center" : "text-start"}`}
-      >
-        <SidebarTrigger onClick={handleToggleSidebar} />
+      <span className={`p-3 focus:outline-none ${isCollapsed ? "text-center" : "text-start"}`}>
+        <SidebarTrigger 
+          onClick={handleToggleSidebar}
+          className="hover:bg-white/50 dark:hover:bg-gray-700/50 p-2 rounded-lg transition-all duration-200 hover:shadow-md" 
+        />
       </span>
 
       {/* Sidebar Items */}
-      <nav className="flex-1 flex flex-col items-start space-y-4 p-4">
+      <nav className="flex-1 flex flex-col items-start space-y-5 p-4">
         {/* Top Items */}
         {topItems.map((item) => (
           <NavLink
@@ -56,23 +57,38 @@ export function AppSidebar({ isCollapsed, toggleSidebar, ownedChannels, enrolled
             key={item.title}
             to={item.url}
             className={({ isActive }) =>
-              `flex items-center w-full ${isCollapsed ? "justify-center" : "px-4"} py-2 rounded-md transition-colors ${
-                isActive ? "bg-gray-700" : "hover:bg-gray-600"
+              `flex items-center w-full ${isCollapsed ? "justify-center" : "px-4"} py-2.5 rounded-lg transition-all duration-200 ${
+                isActive 
+                  ? "bg-gradient-to-r from-blue-600 to-blue-700 dark:from-blue-700 dark:to-blue-800 text-white shadow-lg shadow-blue-500/20" 
+                  : "hover:bg-white/50 dark:hover:bg-gray-700/50 hover:shadow-md"
               }`
             }
           >
-            <item.icon />
-            {!isCollapsed && <span className="ml-2 dark:text-white">{item.title}</span>}
+            {({ isActive }) => (
+              <>
+                <item.icon className={`w-5 h-5 ${isActive ? 'text-white' : ''}`} />
+                {!isCollapsed && <span className="ml-3 font-medium">{item.title}</span>}
+              </>
+            )}
           </NavLink>
         ))}
 
         {/* Owned Channels */}
-        <SidebarMenu title="Owned" icon={UsersIcon} open={ownedOpen} onOpenChange={setOwnedOpen} isCollapsed={isCollapsed}>
-          <Collapsible open={ownedOpen} onOpenChange={setOwnedOpen} className="group/collapsible">
+        <SidebarMenu 
+          title="Owned" 
+          icon={UsersIcon} 
+          open={ownedOpen} 
+          onOpenChange={setOwnedOpen} 
+          isCollapsed={isCollapsed}
+          className="w-full"
+        >
+          <Collapsible open={ownedOpen} onOpenChange={setOwnedOpen} className="group/collapsible w-full">
             <SidebarMenuItem>
               <CollapsibleTrigger
                 asChild
-                className={`flex items-center w-full relative ${isCollapsed ? "justify-center" : "px-4"} py-2 rounded-md transition-colors hover:bg-gray-600`}
+                className={`flex items-center w-full relative ${
+                  isCollapsed ? "justify-center" : "px-4"
+                } py-2.5 rounded-lg transition-all duration-200 hover:bg-white/50 dark:hover:bg-gray-700/50 hover:shadow-md`}
               >
                 <SidebarMenuButton
                   onClick={() => {
@@ -89,17 +105,19 @@ export function AppSidebar({ isCollapsed, toggleSidebar, ownedChannels, enrolled
                   {!isCollapsed && <span className="ml-2">Owned Channels</span>}
                 </SidebarMenuButton>
               </CollapsibleTrigger>
-              <CollapsibleContent>
+              <CollapsibleContent className="transition-all duration-200">
                 <SidebarMenuSub>
                   {ownedChannels.length > 0 ? (
-                    <div className={`mt-2 ml-6 ${isCollapsed ? "hidden" : ""}`}>
+                    <div className={`mt-2 ml-6 space-y-1 ${isCollapsed ? "hidden" : ""}`}>
                       {ownedChannels.map((channel) => (
                         <NavLink
                           key={channel.title}
                           to={channel.url}
                           className={({ isActive }) =>
-                            `flex items-center w-full px-4 py-2 rounded-md transition-colors ${
-                              isActive ? "bg-gray-600" : "hover:bg-gray-500"
+                            `flex items-center w-full px-4 py-2 rounded-md transition-all duration-200 ${
+                              isActive 
+                                ? "bg-gradient-to-r from-purple-600 to-purple-700 dark:from-purple-700 dark:to-purple-800 text-white shadow-lg shadow-purple-500/20" 
+                                : "hover:bg-white/50 dark:hover:bg-gray-700/50 hover:shadow-sm text-gray-700 dark:text-gray-200"
                             } text-sm`
                           }
                         >
@@ -108,7 +126,7 @@ export function AppSidebar({ isCollapsed, toggleSidebar, ownedChannels, enrolled
                       ))}
                     </div>
                   ) : (
-                    <p className="text-sm mt-2 ml-6 text-gray-400">
+                    <p className="text-sm mt-2 ml-6 text-gray-500 dark:text-gray-400 italic">
                       No owned channels.
                     </p>
                   )}
@@ -117,7 +135,8 @@ export function AppSidebar({ isCollapsed, toggleSidebar, ownedChannels, enrolled
             </SidebarMenuItem>
           </Collapsible>
         </SidebarMenu>
-        <Separator className="dark:text-gray-100 dark:bg-gray-100" />
+
+        <Separator className="dark:bg-gray-700/50 bg-gray-200/50 my-2" />
 
         {/* Enrolled Channels */}
         <SidebarMenu title="Enrolled" icon={UsersIcon} open={enrolledOpen} onOpenChange={setEnrolledOpen} isCollapsed={isCollapsed}>
@@ -125,7 +144,9 @@ export function AppSidebar({ isCollapsed, toggleSidebar, ownedChannels, enrolled
             <SidebarMenuItem>
               <CollapsibleTrigger
                 asChild
-                className={`flex items-center w-full relative ${isCollapsed ? "justify-center" : "px-4"} py-2 rounded-md transition-colors hover:bg-gray-600`}
+                className={`flex items-center w-full relative ${
+                  isCollapsed ? "justify-center" : "px-4"
+                } py-2.5 rounded-lg transition-all duration-200 hover:bg-white/50 dark:hover:bg-gray-700/50 hover:shadow-md`}
               >
                 <SidebarMenuButton
                   onClick={() => {
@@ -151,8 +172,10 @@ export function AppSidebar({ isCollapsed, toggleSidebar, ownedChannels, enrolled
                           key={channel.title}
                           to={channel.url}
                           className={({ isActive }) =>
-                            `flex items-center w-full px-4 py-2 rounded-md transition-colors ${
-                              isActive ? "bg-gray-600" : "hover:bg-gray-500"
+                            `flex items-center w-full px-4 py-2 rounded-md transition-all duration-200 ${
+                              isActive 
+                                ? "bg-gradient-to-r from-purple-600 to-purple-700 dark:from-purple-700 dark:to-purple-800 text-white shadow-lg shadow-purple-500/20" 
+                                : "hover:bg-white/50 dark:hover:bg-gray-700/50 hover:shadow-sm text-gray-700 dark:text-gray-200"
                             } text-sm`
                           }
                         >
@@ -161,7 +184,7 @@ export function AppSidebar({ isCollapsed, toggleSidebar, ownedChannels, enrolled
                       ))}
                     </div>
                   ) : (
-                    <p className="text-sm mt-2 ml-6 text-gray-400">
+                    <p className="text-sm mt-2 ml-6 text-gray-500 dark:text-gray-400 italic">
                       No enrolled channels.
                     </p>
                   )}
@@ -173,20 +196,26 @@ export function AppSidebar({ isCollapsed, toggleSidebar, ownedChannels, enrolled
       </nav>
 
       {/* Bottom Items */}
-      <nav className="flex-none flex flex-col items-start space-y-4 p-4 mt-auto">
+      <nav className="flex-none flex flex-col items-start space-y-3 p-4 mt-auto border-t border-gray-200 dark:border-gray-700/50 bg-gradient-to-b from-transparent to-gray-50 dark:to-gray-800/50">
         {bottomItems.map((item) => (
           <NavLink
             end
             key={item.title}
             to={item.url}
             className={({ isActive }) =>
-              `flex items-center w-full ${isCollapsed ? "justify-center" : "px-4"} py-2 rounded-md transition-colors ${
-                isActive ? "bg-gray-700" : "hover:bg-gray-600"
+              `flex items-center w-full ${isCollapsed ? "justify-center" : "px-4"} py-2.5 rounded-lg transition-all duration-200 ${
+                isActive 
+                  ? "bg-gradient-to-r from-blue-600 to-blue-700 dark:from-blue-700 dark:to-blue-800 text-white shadow-lg shadow-blue-500/20" 
+                  : "hover:bg-white/50 dark:hover:bg-gray-700/50 hover:shadow-md"
               }`
             }
           >
-            <item.icon />
-            {!isCollapsed && <span className="ml-2">{item.title}</span>}
+            {({ isActive }) => (
+              <>
+                <item.icon className={`w-5 h-5 ${isActive ? 'text-white' : ''}`} />
+                {!isCollapsed && <span className="ml-3 font-medium">{item.title}</span>}
+              </>
+            )}
           </NavLink>
         ))}
       </nav>

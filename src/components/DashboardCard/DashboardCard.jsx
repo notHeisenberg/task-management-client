@@ -1,8 +1,6 @@
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
-import { HiOutlineDotsVertical } from "react-icons/hi";
-import { FaClipboardUser } from "react-icons/fa6";
-import { MdFolderOpen } from "react-icons/md";
+import { GripVertical } from "lucide-react";
 import { NavLink } from "react-router-dom";
 import PropTypes from 'prop-types';
 
@@ -39,108 +37,93 @@ const DashboardCard = ({ id, channel, onEdit, onCopy, onArchive }) => {
         <div
             ref={setNodeRef}
             style={style}
-            className="relative"
+            className="relative group"
         >
-            {/* Drag handle with listeners */}
-            <div {...attributes} {...listeners} className="absolute inset-0 cursor-move" />
+            {/* Drag handle - Now only in top-left corner */}
+            <div 
+                {...attributes} 
+                {...listeners} 
+                className="absolute top-2 left-2 w-8 h-8 rounded-lg bg-gray-100/80 dark:bg-gray-700/80 backdrop-blur-sm flex items-center justify-center cursor-move z-30 opacity-0 group-hover:opacity-100 transition-opacity duration-200"
+            >
+                <GripVertical className="w-4 h-4 text-gray-600 dark:text-gray-300" />
+            </div>
             
-            {/* Clickable content */}
+            {/* Card Content */}
             <NavLink 
                 to={`/dashboard/ch/${channel?.channelInfo?.channelCode}`}
                 onClick={handleClick}
-                className="block relative z-10"
+                className="block relative"
             >
-                <div className="group relative overflow-hidden rounded-lg bg-white p-1">
-                    {/* Magic UI shine border pattern */}
-                    <div className="absolute inset-0 -z-10 rounded-lg bg-gradient-to-r from-violet-500 via-purple-500 to-blue-500 opacity-0 transition duration-500 group-hover:opacity-100" />
-                    <div className="absolute inset-0 -z-10 rounded-lg bg-gradient-to-r from-violet-500 via-purple-500 to-blue-500 opacity-0 blur-xl transition duration-500 group-hover:opacity-75" />
-
-                    <div className="relative z-10 bg-white rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300">
-                        {/* Top buttons */}
-                        <div className="absolute top-4 right-4 flex gap-3 text-white text-2xl z-20">
-                            <button 
-                                onClick={(e) => {
-                                    e.preventDefault();
-                                    e.stopPropagation();
-                                    onEdit();
-                                }} 
-                                className="focus:outline-none hover:scale-110 transition-transform"
-                            >
-                                <FaClipboardUser />
-                            </button>
-                            <button 
-                                onClick={(e) => {
-                                    e.preventDefault();
-                                    e.stopPropagation();
-                                    onCopy();
-                                }} 
-                                className="focus:outline-none hover:scale-110 transition-transform"
-                            >
-                                <MdFolderOpen />
-                            </button>
-                        </div>
-
-                        <div className="h-60 rounded-t-lg overflow-hidden">
+                <div className="group/card relative overflow-hidden rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 shadow-md hover:shadow-xl p-0.5 transition-all duration-300 hover:scale-[1.02] cursor-pointer">
+                    {/* Gradient Border Effect */}
+                    <div className="absolute inset-0 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 opacity-0 group-hover/card:opacity-20 transition-opacity duration-300" />
+                    
+                    {/* Card Inner Content */}
+                    <div className="relative bg-white dark:bg-gray-800 rounded-xl p-4 transition-transform duration-300">
+                        {/* Channel Image */}
+                        <div className="relative h-48 rounded-lg overflow-hidden mb-4 border border-gray-100 dark:border-gray-700">
                             <div
                                 style={{
                                     backgroundImage: "url('https://i.ibb.co.com/hgf6crv/education.jpg')",
                                 }}
-                                className="h-60 bg-cover bg-center transform transition-transform duration-300 hover:scale-105"
-                            ></div>
+                                className="absolute inset-0 bg-cover bg-center transform transition-transform duration-500 group-hover/card:scale-110"
+                            />
+                            <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover/card:opacity-100 transition-opacity duration-300" />
                         </div>
 
-                        <div className="flex gap-2 py-3 px-2 items-center">
-                            <div>
+                        {/* Channel Info */}
+                        <div className="flex gap-4 items-start p-2 bg-gray-50 dark:bg-gray-800/50 rounded-lg border border-gray-100 dark:border-gray-700">
+                            {/* Teacher Avatar */}
+                            <div className="flex-shrink-0">
                                 {channel?.teachers?.map((teacher, index) => (
                                     <img
                                         key={index}
                                         src={teacher?.image}
-                                        alt=""
-                                        className="h-20 w-20 rounded-full"
+                                        alt={teacher?.name}
+                                        className="h-16 w-16 rounded-full ring-2 ring-white dark:ring-gray-700 shadow-lg border-2 border-gray-50 dark:border-gray-600"
                                     />
                                 )) || (
                                     <img
                                         src="https://i.ibb.co.com/VD1BYW6/ali-morshedlou-WMD64t-Mfc4k-unsplash.jpg"
-                                        alt=""
-                                        className="h-20 w-20 rounded-full"
+                                        alt="Default teacher"
+                                        className="h-16 w-16 rounded-full ring-2 ring-white dark:ring-gray-700 shadow-lg border-2 border-gray-50 dark:border-gray-600"
                                     />
                                 )}
                             </div>
-                            <div>
-                                <h1 className="text-2xl font-semibold text-[#000000]">
+
+                            {/* Channel Details */}
+                            <div className="flex-1">
+                                <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-1 line-clamp-1 group-hover/card:text-blue-600 dark:group-hover/card:text-blue-400 transition-colors">
                                     {channel?.channelInfo?.name}
-                                </h1>
-                                <h1 className="text-[#201f1fc1]">{channel?.channelInfo?.courseID}</h1>
-                                <h1 className="text-[#201f1fc1]">
+                                </h2>
+                                <p className="text-sm text-gray-600 dark:text-gray-300 mb-1">
+                                    {channel?.channelInfo?.courseID}
+                                </p>
+                                <div className="text-sm text-gray-500 dark:text-gray-400">
                                     {channel?.teachers?.map((teacher, index) => (
-                                        <p key={index}>{teacher?.name}</p>
+                                        <p key={index} className="line-clamp-1">{teacher?.name}</p>
                                     ))}
-                                </h1>
+                                </div>
                             </div>
+                        </div>
+
+                        {/* Hover Indicator - More visible in light mode */}
+                        <div className="absolute bottom-3 right-3 px-3 py-1.5 text-sm bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 rounded-full opacity-0 group-hover/card:opacity-100 transition-all duration-200 transform group-hover/card:translate-x-0 translate-x-2">
+                            Click to view →
                         </div>
                     </div>
                 </div>
             </NavLink>
         </div>
     );
-};
+}
 
 DashboardCard.propTypes = {
     id: PropTypes.string.isRequired,
-    channel: PropTypes.shape({
-        channelInfo: PropTypes.shape({
-            channelCode: PropTypes.string,
-            name: PropTypes.string,
-            courseID: PropTypes.string
-        }),
-        teachers: PropTypes.arrayOf(PropTypes.shape({
-            name: PropTypes.string,
-            image: PropTypes.string
-        }))
-    }),
-    onEdit: PropTypes.func,
-    onCopy: PropTypes.func,
-    onArchive: PropTypes.func
+    channel: PropTypes.object.isRequired,
+    onEdit: PropTypes.func.isRequired,
+    onCopy: PropTypes.func.isRequired,
+    onArchive: PropTypes.func.isRequired,
 };
 
 export default DashboardCard;

@@ -12,6 +12,7 @@ import {
 import useAuth from "@/hooks/useAuth";
 import { useNavigate } from 'react-router-dom';
 import { Avatar, AvatarImage } from '@/components/ui/avatar';
+import { AvatarFallback } from '@/components/ui/avatar';
 
 export function DropdownMenuDemo() {
     const { user, logOut } = useAuth();
@@ -29,8 +30,9 @@ export function DropdownMenuDemo() {
     return (
         <DropdownMenu>
             <DropdownMenuTrigger asChild>
-                <Avatar>
+                <Avatar className="w-12 h-12 rounded-full transition-all cursor-pointer hover:p-0.5">
                     <AvatarImage src={user?.photoURL || "https://robohash.org/default-user?set=set1&size=400x400"} className="w-12 h-12 rounded-full transition-all cursor-pointer hover:p-0.5" alt="avatar" />
+                    <AvatarFallback>{user?.email?.charAt(0).toUpperCase()}</AvatarFallback>
                 </Avatar>
             </DropdownMenuTrigger>
             <DropdownMenuContent className="w-56">

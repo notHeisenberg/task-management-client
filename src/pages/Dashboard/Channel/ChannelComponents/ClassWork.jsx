@@ -47,7 +47,8 @@ const Classwork = () => {
             const topicsFromPosts = channel.posts?.filter((post) => post.type === "topic").map((post) => post.name);
             setTopics(topicsFromPosts);
 
-            const validPosts = channel.posts?.filter((post) => post.type !== "topic" && post.type !== "announcement");
+            const validPosts = channel.posts?.filter((post) => post.type !== "topic" && post.type !== "announcement")
+                .sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp)); // Sort by timestamp in descending order
             setFilteredPosts(validPosts);
         }
     }, [channel]);
@@ -116,17 +117,18 @@ const Classwork = () => {
     };
 // console.log(channel)
     return (
-        <div className="space-y-6 container mx-auto px-20">
+        <div className="container mx-auto px-4 md:px-8 lg:px-16 py-8 space-y-8">
             {isCreator && (
-                <div className="flex items-center justify-between mb-4">
+                <div className="flex items-center justify-between mb-8">
                     <CreateDropdown onOpenDialog={openDialog} />
                 </div>
             )}
+
             {!filteredPosts?.length && !topics?.length ? (
-                <div className="flex flex-col items-center">
-                    <img src={placeholder_dog} alt="Placeholder" className="w-1/4 h-auto mb-2" />
-                    <h1 className="font-semibold text-sm">This is where you’ll assign work</h1>
-                    <p className="text-center text-sm opacity-80 mt-2 max-w-sm">
+                <div className="flex flex-col items-center py-16 bg-white/50 dark:bg-gray-800/50 rounded-2xl backdrop-blur-sm">
+                    <img src={placeholder_dog} alt="Placeholder" className="w-48 h-auto mb-6 animate-bounce" />
+                    <h1 className="font-semibold text-xl mb-2">This is where you'll assign work</h1>
+                    <p className="text-center text-base text-gray-600 dark:text-gray-300 max-w-md">
                         {isCreator
                             ? "You can add assignments and other work for the class, then organize it into topics."
                             : "Please check back later for assignments and materials."}
@@ -134,9 +136,9 @@ const Classwork = () => {
                 </div>
             ) : (
                 <>
-                    <div className="mb-4">
+                    <div className="mb-6">
                         <Select value={selectedTopic} onValueChange={setSelectedTopic}>
-                            <SelectTrigger className="w-[200px]">
+                            <SelectTrigger className="w-[200px] bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm">
                                 <SelectValue placeholder="All Topics" />
                             </SelectTrigger>
                             <SelectContent>
@@ -152,146 +154,59 @@ const Classwork = () => {
                         </Select>
                     </div>
 
-                    {selectedTopic === "All Topics" ? (
-                        <>
-                            {uncategorizedPosts?.length > 0 && (
-                                <div>
-                                    {uncategorizedPosts.map((post) => (
-                                        <Card key={post.postCode} className="mb-4 shadow-md">
-                                            <CardHeader
-                                                className="cursor-pointer"
-                                                onClick={() => toggleCard(post.postCode)}
-                                            >
-                                                <div className="flex items-center justify-between gap-2">
-                                                    <div className="flex items-center gap-2">
-                                                        {React.createElement(
-                                                            typeIcons[post.type] || MdOutlineAssignment,
-                                                            { className: "w-10 h-10 text-gray-700" }
-                                                        )}
-                                                        <CardTitle>
-                                                            <span className="font-bold">{post.title || "Untitled Post"}</span>
-                                                            <p className="text-sm text-gray-500 mt-1">
-                                                                {new Date(post?.timestamp).toLocaleDateString('en-US', {
-                                                                    month: 'short',
-                                                                    day: 'numeric',
-                                                                })},{" "}
-                                                                {new Date(post?.timestamp).toLocaleTimeString([], {
-                                                                    hour: 'numeric',
-                                                                    minute: 'numeric',
-                                                                })}
-                                                            </p>
-                                                        </CardTitle>
-                                                    </div>
-                                                    <div className="flex items-center">
-                                                        {post?.type !== "material" && post?.dueDate ?
-                                                            <p className="text-sm text-gray-500">
-                                                                {new Date(post?.dueDate).toLocaleDateString('en-US', {
-                                                                    month: 'short',
-                                                                    day: 'numeric',
-                                                                })}{" "}
-                                                                {post?.dueTime && new Date(post?.dueTime).toLocaleTimeString([], {
-                                                                    hour: 'numeric',
-                                                                    minute: 'numeric',
-                                                                })}
-                                                            </p>
-                                                            :
-                                                            <p className="text-sm text-gray-500">No due date</p>
-                                                        }
-                                                        <Popover>
-                                                            <PopoverTrigger>
-                                                                <Button variant="ghost" size="sm" className="rounded-full">
-                                                                    <BsThreeDotsVertical />
-                                                                </Button>
-                                                            </PopoverTrigger>
-                                                            <PopoverContent className='w-fit h-fit p-1 absolute right-0'>
-                                                                <Button variant="ghost" size="sm" onClick={() => copyPostCode(post?.channelCode, post?.postCode, post?.type)}>
-                                                                    Copy Link
-                                                                </Button>
-                                                            </PopoverContent>
-                                                        </Popover>
-                                                    </div>
-                                                </div>
-                                            </CardHeader>
-                                            <CardContent
-                                                className={`transition-all duration-300 ${expandedCards[post.postCode] ? "max-h-[500px] opacity-100" : "max-h-0 opacity-0 overflow-hidden"
-                                                    }`}
-                                            >
-                                                <p>{post.content}</p>
-                                                <Button
-                                                    variant="link"
-                                                    className="mt-2"
-                                                    onClick={() =>
-                                                        handleViewInstruction(post.type, post.postCode)
-                                                    }
-                                                >
-                                                    View Instruction
-                                                </Button>
-                                            </CardContent>
-                                        </Card>
-                                    ))}
-                                </div>
-                            )}
-                            {topics.map((topic, topicIndex) => (
-                                <div key={topicIndex}>
-                                    {/* Topic Title */}
-                                    <h3
-                                        className={`font-bold text-xl mb-4 cursor-pointer w-fit ${selectedTopic === topic ? "text-blue-600" : ""
-                                            }`}
-                                        onClick={() => setSelectedTopic(topic)}
-                                        onMouseEnter={(e) => e.target.classList.add("btn-link")}
-                                        onMouseLeave={(e) => e.target.classList.remove("btn-link")}
-                                    >
-                                        {topic}
-                                    </h3>
-                                    {getPostsByTopic(topic).length > 0 ? (
-                                        getPostsByTopic(topic).map((post) => (
-                                            <Card key={post.postCode} className="mb-4 shadow-md">
+                    <div className="space-y-6">
+                        {selectedTopic === "All Topics" ? (
+                            <>
+                                {uncategorizedPosts?.length > 0 && (
+                                    <div className="space-y-4">
+                                        {uncategorizedPosts.map((post) => (
+                                            <Card key={post.postCode} className="bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm border-none shadow-lg hover:shadow-xl transition-all duration-300">
                                                 <CardHeader
-                                                    className="cursor-pointer"
+                                                    className="cursor-pointer group"
                                                     onClick={() => toggleCard(post.postCode)}
                                                 >
-                                                    <div className="flex items-center justify-between gap-2">
-                                                        <div className="flex items-center gap-2">
-                                                            {React.createElement(
-                                                                typeIcons[post.type] || MdOutlineAssignment,
-                                                                { className: "w-10 h-10 text-gray-700" }
-                                                            )}
-                                                            <CardTitle>
-                                                                <span className="font-bold">{post.title || "Untitled Post"}</span>
+                                                    <div className="flex items-center justify-between gap-4">
+                                                        <div className="flex items-center gap-4">
+                                                            <div className="p-3 bg-gray-100 dark:bg-gray-700 rounded-xl">
+                                                                {React.createElement(
+                                                                    typeIcons[post.type] || MdOutlineAssignment,
+                                                                    { className: "w-8 h-8 text-blue-600 dark:text-blue-400" }
+                                                                )}
+                                                            </div>
+                                                            <div>
+                                                                <CardTitle className="text-xl group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
+                                                                    {post.title || "Untitled Post"}
+                                                                </CardTitle>
                                                                 <p className="text-sm text-gray-500 mt-1">
-                                                                    {new Date(post?.timestamp).toLocaleDateString('en-US', {
+                                                                    Posted {new Date(post?.timestamp).toLocaleDateString('en-US', {
                                                                         month: 'short',
                                                                         day: 'numeric',
-                                                                    })},{" "}
-                                                                    {new Date(post?.timestamp).toLocaleTimeString([], {
+                                                                    })} at {new Date(post?.timestamp).toLocaleTimeString([], {
                                                                         hour: 'numeric',
                                                                         minute: 'numeric',
                                                                     })}
                                                                 </p>
-                                                            </CardTitle>
+                                                            </div>
                                                         </div>
-                                                        <div className="flex items-center">
-                                                            {post?.type !== "material" && post?.dueDate ?
-                                                                <p className="text-sm text-gray-500">
-                                                                    {new Date(post?.dueDate).toLocaleDateString('en-US', {
-                                                                        month: 'short',
-                                                                        day: 'numeric',
-                                                                    })}{" "}
-                                                                    {post?.dueTime && new Date(post?.dueTime).toLocaleTimeString([], {
-                                                                        hour: 'numeric',
-                                                                        minute: 'numeric',
-                                                                    })}
-                                                                </p>
-                                                                :
-                                                                <p className="text-sm text-gray-500">No due date</p>
-                                                            }
+                                                        <div className="flex items-center gap-4">
+                                                            {post?.type !== "material" && post?.dueDate && (
+                                                                <div className="text-right">
+                                                                    <p className="text-sm font-medium text-red-500">Due</p>
+                                                                    <p className="text-sm text-gray-600 dark:text-gray-300">
+                                                                        {new Date(post?.dueDate).toLocaleDateString('en-US', {
+                                                                            month: 'short',
+                                                                            day: 'numeric',
+                                                                        })}
+                                                                    </p>
+                                                                </div>
+                                                            )}
                                                             <Popover>
                                                                 <PopoverTrigger>
-                                                                    <Button variant="ghost" size="sm" className="rounded-full">
+                                                                    <Button variant="ghost" size="sm" className="rounded-full hover:bg-gray-100 dark:hover:bg-gray-700">
                                                                         <BsThreeDotsVertical />
                                                                     </Button>
                                                                 </PopoverTrigger>
-                                                                <PopoverContent className='w-fit h-fit p-1 absolute right-0'>
+                                                                <PopoverContent className="w-fit p-1">
                                                                     <Button variant="ghost" size="sm" onClick={() => copyPostCode(post?.channelCode, post?.postCode, post?.type)}>
                                                                         Copy Link
                                                                     </Button>
@@ -301,104 +216,193 @@ const Classwork = () => {
                                                     </div>
                                                 </CardHeader>
                                                 <CardContent
-                                                    className={`transition-all duration-300 ${expandedCards[post.postCode] ? "max-h-[500px] opacity-100" : "max-h-0 opacity-0 overflow-hidden"
-                                                        }`}
+                                                    className={`transition-all duration-300 ${expandedCards[post.postCode] ? "max-h-[500px] opacity-100" : "max-h-0 opacity-0 overflow-hidden"}`}
                                                 >
-                                                    <p>{post.content}</p>
-                                                    <Button
-                                                        variant="link"
-                                                        className="mt-2"
-                                                        onClick={() => handleViewInstruction(post.type, post.postCode)}
-                                                    >
-                                                        View Instruction
-                                                    </Button>
+                                                    <div className="p-4 bg-gray-50 dark:bg-gray-700/50 rounded-lg mt-4">
+                                                        <p className="text-gray-700 dark:text-gray-300">{post.content}</p>
+                                                        <Button
+                                                            variant="link"
+                                                            className="mt-4 text-blue-600 dark:text-blue-400"
+                                                            onClick={() => handleViewInstruction(post.type, post.postCode)}
+                                                        >
+                                                            View Instructions →
+                                                        </Button>
+                                                    </div>
                                                 </CardContent>
                                             </Card>
-                                        ))
-                                    ) : (
-                                        <p className="text-sm text-gray-500">No posts under this topic.</p>
-                                    )}
-                                </div>
-                            ))}
-                        </>
-                    ) : (
-                        <>
-                            {getPostsByTopic(selectedTopic).map((post) => (
-                                <Card key={post.postCode} className="mb-4 shadow-md">
-                                    <CardHeader
-                                        className="cursor-pointer"
-                                        onClick={() => toggleCard(post.postCode)}
-                                    >
-                                        <div className="flex items-center justify-between gap-2">
-                                            <div className="flex items-center gap-2">
-                                                {React.createElement(
-                                                    typeIcons[post.type] || MdOutlineAssignment,
-                                                    { className: "w-10 h-10 text-gray-700" }
-                                                )}
-                                                <CardTitle>
-                                                    <span className="font-bold">{post.title || "Untitled Post"}</span>
-                                                    <p className="text-sm text-gray-500 mt-1">
-                                                        {new Date(post?.timestamp).toLocaleDateString('en-US', {
-                                                            month: 'short',
-                                                            day: 'numeric',
-                                                        })},{" "}
-                                                        {new Date(post?.timestamp).toLocaleTimeString([], {
-                                                            hour: 'numeric',
-                                                            minute: 'numeric',
-                                                        })}
-                                                    </p>
-                                                </CardTitle>
-                                            </div>
-                                            <div className="flex items-center">
-                                                {post?.type !== "material" && post?.dueDate ?
-                                                    <p className="text-sm text-gray-500">
-                                                        {new Date(post?.dueDate).toLocaleDateString('en-US', {
-                                                            month: 'short',
-                                                            day: 'numeric',
-                                                        })}{" "}
-                                                        {post?.dueTime && new Date(post?.dueTime).toLocaleTimeString([], {
-                                                            hour: 'numeric',
-                                                            minute: 'numeric',
-                                                        })}
-                                                    </p>
-                                                    :
-                                                    <p className="text-sm text-gray-500">No due date</p>
-                                                }
-                                                <Popover>
-                                                    <PopoverTrigger>
-                                                        <Button variant="ghost" size="sm" className="rounded-full">
-                                                            <BsThreeDotsVertical />
-                                                        </Button>
-                                                    </PopoverTrigger>
-                                                    <PopoverContent className='w-fit h-fit p-1 absolute right-0'>
-                                                        <Button variant="ghost" size="sm" onClick={() => copyPostCode(post?.channelCode, post?.postCode, post?.type)}>
-                                                            Copy Link
-                                                        </Button>
-                                                    </PopoverContent>
-                                                </Popover>
-                                            </div>
-                                        </div>
-                                    </CardHeader>
-                                    <CardContent
-                                        className={`transition-all duration-300 ${expandedCards[post.postCode] ? "max-h-[500px] opacity-100" : "max-h-0 opacity-0 overflow-hidden"
-                                            }`}
-                                    >
-                                        <p>{post.content}</p>
-                                        <p className="text-sm text-gray-500">
-                                            Posted at {new Date(post.timestamp).toLocaleString()}
-                                        </p>
-                                        <Button
-                                            variant="link"
-                                            className="mt-2"
-                                            onClick={() => handleViewInstruction(post.type, post.postCode)}
+                                        ))}
+                                    </div>
+                                )}
+
+                                {topics.map((topic, topicIndex) => (
+                                    <div key={topicIndex}>
+                                        {/* Topic Title */}
+                                        <h3
+                                            className={`font-bold text-xl mb-4 cursor-pointer w-fit ${selectedTopic === topic ? "text-blue-600" : ""
+                                                }`}
+                                            onClick={() => setSelectedTopic(topic)}
+                                            onMouseEnter={(e) => e.target.classList.add("btn-link")}
+                                            onMouseLeave={(e) => e.target.classList.remove("btn-link")}
                                         >
-                                            View Instruction
-                                        </Button>
-                                    </CardContent>
-                                </Card>
-                            ))}
-                        </>
-                    )}
+                                            {topic}
+                                        </h3>
+                                        {getPostsByTopic(topic).length > 0 ? (
+                                            getPostsByTopic(topic).map((post) => (
+                                                <Card key={post.postCode} className="mb-4 shadow-md">
+                                                    <CardHeader
+                                                        className="cursor-pointer"
+                                                        onClick={() => toggleCard(post.postCode)}
+                                                    >
+                                                        <div className="flex items-center justify-between gap-2">
+                                                            <div className="flex items-center gap-2">
+                                                                {React.createElement(
+                                                                    typeIcons[post.type] || MdOutlineAssignment,
+                                                                    { className: "w-10 h-10 text-gray-700" }
+                                                                )}
+                                                                <CardTitle>
+                                                                    <span className="font-bold">{post.title || "Untitled Post"}</span>
+                                                                    <p className="text-sm text-gray-500 mt-1">
+                                                                        {new Date(post?.timestamp).toLocaleDateString('en-US', {
+                                                                            month: 'short',
+                                                                            day: 'numeric',
+                                                                        })},{" "}
+                                                                        {new Date(post?.timestamp).toLocaleTimeString([], {
+                                                                            hour: 'numeric',
+                                                                            minute: 'numeric',
+                                                                        })}
+                                                                    </p>
+                                                                </CardTitle>
+                                                            </div>
+                                                            <div className="flex items-center">
+                                                                {post?.type !== "material" && post?.dueDate ?
+                                                                    <p className="text-sm text-gray-500">
+                                                                        {new Date(post?.dueDate).toLocaleDateString('en-US', {
+                                                                            month: 'short',
+                                                                            day: 'numeric',
+                                                                        })}{" "}
+                                                                        {post?.dueTime && new Date(post?.dueTime).toLocaleTimeString([], {
+                                                                            hour: 'numeric',
+                                                                            minute: 'numeric',
+                                                                        })}
+                                                                    </p>
+                                                                    :
+                                                                    <p className="text-sm text-gray-500">No due date</p>
+                                                                }
+                                                                <Popover>
+                                                                    <PopoverTrigger>
+                                                                        <Button variant="ghost" size="sm" className="rounded-full">
+                                                                            <BsThreeDotsVertical />
+                                                                        </Button>
+                                                                    </PopoverTrigger>
+                                                                    <PopoverContent className='w-fit h-fit p-1 absolute right-0'>
+                                                                        <Button variant="ghost" size="sm" onClick={() => copyPostCode(post?.channelCode, post?.postCode, post?.type)}>
+                                                                            Copy Link
+                                                                        </Button>
+                                                                    </PopoverContent>
+                                                                </Popover>
+                                                            </div>
+                                                        </div>
+                                                    </CardHeader>
+                                                    <CardContent
+                                                        className={`transition-all duration-300 ${expandedCards[post.postCode] ? "max-h-[500px] opacity-100" : "max-h-0 opacity-0 overflow-hidden"
+                                                            }`}
+                                                    >
+                                                        <p>{post.content}</p>
+                                                        <Button
+                                                            variant="link"
+                                                            className="mt-2"
+                                                            onClick={() => handleViewInstruction(post.type, post.postCode)}
+                                                        >
+                                                            View Instruction
+                                                        </Button>
+                                                    </CardContent>
+                                                </Card>
+                                            ))
+                                        ) : (
+                                            <p className="text-sm text-gray-500">No posts under this topic.</p>
+                                        )}
+                                    </div>
+                                ))}
+                            </>
+                        ) : (
+                            <>
+                                {getPostsByTopic(selectedTopic).map((post) => (
+                                    <Card key={post.postCode} className="mb-4 shadow-md">
+                                        <CardHeader
+                                            className="cursor-pointer"
+                                            onClick={() => toggleCard(post.postCode)}
+                                        >
+                                            <div className="flex items-center justify-between gap-2">
+                                                <div className="flex items-center gap-2">
+                                                    {React.createElement(
+                                                        typeIcons[post.type] || MdOutlineAssignment,
+                                                        { className: "w-10 h-10 text-gray-700" }
+                                                    )}
+                                                    <CardTitle>
+                                                        <span className="font-bold">{post.title || "Untitled Post"}</span>
+                                                        <p className="text-sm text-gray-500 mt-1">
+                                                            {new Date(post?.timestamp).toLocaleDateString('en-US', {
+                                                                month: 'short',
+                                                                day: 'numeric',
+                                                            })},{" "}
+                                                            {new Date(post?.timestamp).toLocaleTimeString([], {
+                                                                hour: 'numeric',
+                                                                minute: 'numeric',
+                                                            })}
+                                                        </p>
+                                                    </CardTitle>
+                                                </div>
+                                                <div className="flex items-center">
+                                                    {post?.type !== "material" && post?.dueDate ?
+                                                        <p className="text-sm text-gray-500">
+                                                            {new Date(post?.dueDate).toLocaleDateString('en-US', {
+                                                                month: 'short',
+                                                                day: 'numeric',
+                                                            })}{" "}
+                                                            {post?.dueTime && new Date(post?.dueTime).toLocaleTimeString([], {
+                                                                hour: 'numeric',
+                                                                minute: 'numeric',
+                                                            })}
+                                                        </p>
+                                                        :
+                                                        <p className="text-sm text-gray-500">No due date</p>
+                                                    }
+                                                    <Popover>
+                                                        <PopoverTrigger>
+                                                            <Button variant="ghost" size="sm" className="rounded-full">
+                                                                <BsThreeDotsVertical />
+                                                            </Button>
+                                                        </PopoverTrigger>
+                                                        <PopoverContent className='w-fit h-fit p-1 absolute right-0'>
+                                                            <Button variant="ghost" size="sm" onClick={() => copyPostCode(post?.channelCode, post?.postCode, post?.type)}>
+                                                                Copy Link
+                                                            </Button>
+                                                        </PopoverContent>
+                                                    </Popover>
+                                                </div>
+                                            </div>
+                                        </CardHeader>
+                                        <CardContent
+                                            className={`transition-all duration-300 ${expandedCards[post.postCode] ? "max-h-[500px] opacity-100" : "max-h-0 opacity-0 overflow-hidden"
+                                                }`}
+                                        >
+                                            <p>{post.content}</p>
+                                            <p className="text-sm text-gray-500">
+                                                Posted at {new Date(post.timestamp).toLocaleString()}
+                                            </p>
+                                            <Button
+                                                variant="link"
+                                                className="mt-2"
+                                                onClick={() => handleViewInstruction(post.type, post.postCode)}
+                                            >
+                                                View Instruction
+                                            </Button>
+                                        </CardContent>
+                                    </Card>
+                                ))}
+                            </>
+                        )}
+                    </div>
                 </>
             )}
             <ClassworkModal
